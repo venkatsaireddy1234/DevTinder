@@ -6,6 +6,22 @@ const app = express();
 
 
 
+app.get("/user/:id", (req,res)=>{
+    const id = req.params.id;
+    console.log(id);
+    res.send("Getting the id of users :" + id);
+})
+
+app.get(/.*fly$/, (req,res)=>{
+    res.send("this is regex pattern")
+})
+
+app.get("/user/userId", (req,res)=>{
+    const userId = req.query.userId;
+    res.send("Getting the userId of users" + userId);
+})
+
+
 app.get('/user', (req,res) =>{
     res.send("Getting the users")
 })
