@@ -14,17 +14,18 @@ const app = express();
 // It doesn't break because the first route handler executes the second route handler before 
 // responding the first route handler because of the next() and it never executes the first route handler
 //  with the response because no end point can have two responses
+// we can pass the array of route handlers as well to the same end point
 app.use("/user", 
-    (req,res, next)=>{
+    [(req,res, next)=>{
     console.log("This is the first route handler")
-    next()
     res.send("1st route handler")
+    next()
     },
     (req, res, next) =>{
     console.log("This is the second route handler")
     res.send("2nd route handler")
     next()
-    }   
+    }] 
 )
 
 
