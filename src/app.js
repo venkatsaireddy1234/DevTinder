@@ -9,10 +9,11 @@ const app = express();
 //playing with the same end point with the different route handlers
 //In order to execute the multiple route handlers we need to use next() function  
 // but here once we send the response in the 15th line it stops executes the next route handler
+// so  we cannot send the multiple responses for a single end point we may skip at first route handler to see the second route handler resonse
 app.use("/user", 
     (req,res, next)=>{
     console.log("This is the first route handler")
-    res.send("1st route handler")
+    // res.send("1st route handler")
     next()
     },
     (req, res, next) =>{
