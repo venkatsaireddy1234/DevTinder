@@ -16,14 +16,19 @@ const app = express();
 //  with the response because no end point can have two responses
 // we can pass the array of route handlers as well to the same end point
 app.use("/user", 
-    [(req,res, next)=>{
+    (req,res, next)=>{
     console.log("This is the first route handler")
-    res.send("1st route handler")
+    // res.send("1st route handler")
+    next()
+    },
+    [(req,res, next)=>{
+    console.log("This is the second route handler")
+    res.send("2st route handler")
     next()
     },
     (req, res, next) =>{
-    console.log("This is the second route handler")
-    res.send("2nd route handler")
+    console.log("This is the third route handler")
+    res.send("3rd route handler")
     next()
     }] 
 )
