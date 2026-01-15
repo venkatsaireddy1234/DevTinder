@@ -6,45 +6,23 @@ const app = express();
 
 
 
-app.get("/user/:id", (req,res)=>{
-    const id = req.params.id;
-    console.log(id);
-    res.send("Getting the id of users :" + id);
-})
+//playing with the same end point with the different route handlers
+//In order to execute the multiple route handlers we need to use next() function  
+// but here once we send the response in the 15th line it stops executes the next route handler
+app.use("/user", 
+    (req,res, next)=>{
+    console.log("This is the first route handler")
+    res.send("1st route handler")
+    next()
+    },
+    (req, res, next) =>{
+    console.log("This is the second route handler")
+    res.send("2nd route handler")
+    next()
+    }   
+)
 
-app.get(/.*fly$/, (req,res)=>{
-    res.send("this is regex pattern")
-})
 
-app.get("/user/userId", (req,res)=>{
-    const userId = req.query.userId;
-    res.send("Getting the userId of users" + userId);
-})
-
-
-app.get('/user', (req,res) =>{
-    res.send("Getting the users")
-})
-
-app.post('/user', (req,res) =>{
-    res.send({name:"venkat"})
-})
-
-app.delete("/user", (req,res) =>{
-    res.send("deleting the user")
-})
-// handle the requests for any routes
-app.use("/home", (req, res)=>{
-    res.send("this is the home page")
-})
-app.use('/',(req,res) =>{
-    res.send("this is the default page")
-})
-
-// this is the request handler
-app.use((req,res)=>{
-    res.send("handling the requestes")
-})
 
 // accept the requests or listen to the requests 
 app.listen(7777, ()=>{
