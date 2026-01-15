@@ -4,20 +4,13 @@ const express = require('express');
 //create an app from the express module
 const app = express();
 
+const { userMiddleware } = require('./middlewares/auth')
 
 
 // next() is usually useful when we need to handle middlewares
 // we can write the middleware in the first end point and pass it to the second route handler as below
-app.use('/user', (req,res,next)=>{
-    const token = "token";
-    const isAuthUser = token === "token";
-    console.log("checking the authorization")
-    if(isAuthUser){
-        next()
-    }else{
-        res.status(403).send("Unauthorised User")
-    }
-})
+// or we can write the middleware globally and import it and use it in the app and it works the same way
+app.use('/user',userMiddleware)
 app.get("/user", (req,res)=>{
     res.send("user data and checked in the above middleware")
 })
