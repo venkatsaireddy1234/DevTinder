@@ -38,6 +38,21 @@ app.get('/user', async (req, res)=>{
         res.status(500).send("Error in fetching the user");
     }
 })
+
+app.get('/feed', async (req,res)=>{
+    try{
+        const users = await User.find({});
+        if(users.length === 0){
+            res.status(404).send("No users found");
+        }else{
+
+            res.json(users);
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in fetching users");
+    }
+})
 connectDB().then(()=>{
     console.log("DB connected successfully");
     app.listen(7777, ()=>{
