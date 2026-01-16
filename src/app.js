@@ -69,7 +69,22 @@ app.get('/feed', async (req,res)=>{
         res.status(500).send("Error in fetching users");
     }
 })
-
+ app.delete("/user", async(req,res)=>{
+    const id = req.body.id;
+    console.log(id);
+    try{
+        const deletedUser = await User.findByIdAndDelete(id);
+        console.log(deletedUser);
+        if(!deletedUser){
+            res.status(404).send("User not found");
+        }else{
+            res.json(deletedUser);
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in deleting the user");
+    }
+ })
 connectDB().then(()=>{
     console.log("DB connected successfully");
     app.listen(7777, ()=>{
