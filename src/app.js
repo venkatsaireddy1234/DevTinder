@@ -20,6 +20,24 @@ app.post('/signup', async (req, res)=>{
         res.status(500).send("Error in signing up the user");
     }
 })
+
+
+app.get('/user', async (req, res)=>{
+    const emailId = req.body.email;
+    console.log(emailId)
+    try{
+        const user = await User.findOne({email: emailId});
+        console.log(user);
+        if(!user){
+            res.status(404).send("User not found");
+        }else{
+            res.json(user);
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in fetching the user");
+    }
+})
 connectDB().then(()=>{
     console.log("DB connected successfully");
     app.listen(7777, ()=>{
