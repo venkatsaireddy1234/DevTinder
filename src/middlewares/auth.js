@@ -1,11 +1,11 @@
 const userMiddleware = (req,res,next)=>{
     const token = "token";
-    const isAuthUser = token === "token";
+    const isAuthUser = token === "tokn";
     console.log("checking the authorization")
-    if(isAuthUser){
-        next()
+    if(!isAuthUser){
+        res.status(403).send("Invalid User")
     }else{
-        res.status(403).send("Unauthorised User")
+        next()
     }
 }
 
