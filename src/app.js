@@ -85,6 +85,21 @@ app.get('/feed', async (req,res)=>{
         res.status(500).send("Error in deleting the user");
     }
  })
+ app.patch("/user", async (req,res)=>{
+    const id = req.body.id;
+    const data = req.body
+    try{
+        const user  = await User.findByIdAndUpdate(id, data);
+        if(!user){
+            res.status(404).send("User not found");
+        }else{
+            res.json(user);
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in updating the user");
+    }
+ })
 connectDB().then(()=>{
     console.log("DB connected successfully");
     app.listen(7777, ()=>{
