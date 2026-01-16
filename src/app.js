@@ -22,6 +22,21 @@ app.post('/signup', async (req, res)=>{
 })
 
 
+app.get('/userByID', async(req,res)=>{
+    const id = req.body.id;
+    try{
+        const user = await User.findById(id);
+        if(!user){
+            res.status(404).send("User not found");
+        }else{
+            res.json(user);
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in fetching the user");
+    }
+})
+
 app.get('/user', async (req, res)=>{
     const emailId = req.body.email;
     console.log(emailId)
@@ -39,6 +54,7 @@ app.get('/user', async (req, res)=>{
     }
 })
 
+
 app.get('/feed', async (req,res)=>{
     try{
         const users = await User.find({});
@@ -53,6 +69,7 @@ app.get('/feed', async (req,res)=>{
         res.status(500).send("Error in fetching users");
     }
 })
+
 connectDB().then(()=>{
     console.log("DB connected successfully");
     app.listen(7777, ()=>{
