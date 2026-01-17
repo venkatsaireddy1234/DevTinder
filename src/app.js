@@ -4,6 +4,7 @@ const {connectDB} = require('./Config/dataBase');
 const User = require('./models/user');
 const {validateSignUp} = require('./utils/validateSignUp');
 const bcrypt = require('bcrypt');
+const jwtToken = require('jsonwebtoken');
 //create an app from the express module
 const app = express();
 
@@ -46,6 +47,8 @@ app.post('/login', async(req,res)=>{
             throw new Error("Invalid login credentials");
         }
         else{
+            const token = jwtToken.sign({userId: user._id}, 'secretKey')
+            res.cookie('userId', token);
             res.status(200).send("User logged in successfully");
         }
     }
