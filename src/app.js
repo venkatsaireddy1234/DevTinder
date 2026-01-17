@@ -17,7 +17,7 @@ app.post('/signup', async (req, res)=>{
         res.send("User signed up successfully");
     }
     catch(err){
-        res.status(500).send("Error in signing up the user");
+        res.status(500).send("Error in signing up the user" + err.message);
     }
 })
 
@@ -33,7 +33,7 @@ app.get('/userByID', async(req,res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Error in fetching the user");
+        res.status(500).send("Error in fetching the user" + err.message);
     }
 })
 
@@ -50,7 +50,7 @@ app.get('/user', async (req, res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Error in fetching the user");
+        res.status(500).send("Error in fetching the user" + err.message);
     }
 })
 
@@ -66,7 +66,7 @@ app.get('/feed', async (req,res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Error in fetching users");
+        res.status(500).send("Error in fetching users" + err.message);
     }
 })
  app.delete("/user", async(req,res)=>{
@@ -82,14 +82,14 @@ app.get('/feed', async (req,res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Error in deleting the user");
+        res.status(500).send("Error in deleting the user" + err.message);
     }
  })
  app.patch("/user", async (req,res)=>{
     const id = req.body.id;
     const data = req.body
     try{
-        const user  = await User.findByIdAndUpdate(id, data);
+        const user  = await User.findByIdAndUpdate(id, data, {runValidators: true});
         if(!user){
             res.status(404).send("User not found");
         }else{
@@ -97,7 +97,7 @@ app.get('/feed', async (req,res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Error in updating the user");
+        res.status(500).send("Error in updating the user" + err.message);
     }
  })
 
@@ -112,7 +112,7 @@ app.get('/feed', async (req,res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Error in deleting the user");
+        res.status(500).send("Error in deleting the user" + err.message);
     }
  })
 connectDB().then(()=>{
