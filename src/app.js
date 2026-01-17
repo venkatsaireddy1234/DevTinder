@@ -118,6 +118,18 @@ app.get("/profile", userAuth ,async(req,res)=>{
         res.status(500).send("Error in fetching profile" + err.message);
     }
 })
+
+app.get("/sendConnectionRequest",  userAuth,async(req,res) =>{
+    try{
+        const user = req.user;
+        if(!user){
+            throw new Error("User not found");
+        }
+        res.send("Connection request sent successfully by " + user.firstName);
+    }catch(err){
+        res.status(500).send("Error in sending connection request" + err.message);
+    }
+})
  app.delete("/user", async(req,res)=>{
     const id = req.body.id;
     console.log(id);
