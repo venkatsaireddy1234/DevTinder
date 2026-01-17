@@ -5,11 +5,14 @@ const User = require('./models/user');
 const {validateSignUp} = require('./utils/validateSignUp');
 const bcrypt = require('bcrypt');
 const jwtToken = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 //create an app from the express module
 const app = express();
 
-
+// express.json() line converts the response into json format
 app.use(express.json());
+// cookieParser()  parses the request for the following endpoints 
+app.use(cookieParser())
 
 app.post('/signup', async (req, res)=>{
     const {firstName, lastName, email, password, age, gender, photoUrl, country, skills} = req.body;
@@ -35,7 +38,7 @@ app.post('/signup', async (req, res)=>{
     }
 })
 
-app.post('/login', async(req,res)=>{
+app.post('/login', async (req,res)=>{
     const {email,password} = req.body;
     try{
         const user = await User.findOne({email:email})
@@ -43,13 +46,13 @@ app.post('/login', async(req,res)=>{
             throw new Error("Invalid login credentials");
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if(!isPasswordValid){
-            throw new Error("Invalid login credentials");
+        if(isPasswordValid){
+            const token = await jwtToken.sign({userId: user._id}, 'secretKey')
+            res.cookie('token', token);
+            res.status(200).send("User logged in successfully");
         }
         else{
-            const token = jwtToken.sign({userId: user._id}, 'secretKey')
-            res.cookie('userId', token);
-            res.status(200).send("User logged in successfully");
+            throw new Error("Invalid login credentials");
         }
     }
     catch(err){
@@ -102,6 +105,27 @@ app.get('/feed', async (req,res)=>{
     }
     catch(err){
         res.status(500).send("Error in fetching users" + err.message);
+    }
+})
+
+app.get("/profile", async(req,res)=>{
+    try{
+         const cookies = req.cookies;
+        const {token} = cookies;
+        if(!token){
+            throw new Error("Unauthorized: Please login again");
+        }
+        const decodedVal = jwtToken.verify(token, 'secretKey');
+        const {userId} = decodedVal;
+        const user = await User.findById(userId);
+        if(!user){
+            res.status(404).send("User not found");
+        }else{
+            res.send(user);
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in fetching profile" + err.message);
     }
 })
  app.delete("/user", async(req,res)=>{
