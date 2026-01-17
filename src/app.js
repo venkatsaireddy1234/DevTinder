@@ -10,7 +10,6 @@ app.use(express.json());
 
 app.post('/signup', async (req, res)=>{
     const userObj = req.body;
-    console.log(userObj);
     const user = new User(userObj);
     try{
         await  user.save();

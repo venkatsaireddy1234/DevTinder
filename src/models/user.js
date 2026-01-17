@@ -1,27 +1,35 @@
 const mongoose = require('mongoose');
-
+const validator = require('validator');
 const userSchema = new mongoose.Schema({
     firstName : {
         type: String,
-        min:4,
-        max: 10
+        min:5,
+        max: 50,
+        required: true
     },
     lastName :{
         type: String,
     },
     email:{
+        required: true,
         type: String,
         unique: true,
         trim: true,
-        lowercase: true
+        lowercase: true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Email is invalid");
+            }
+        }
+        
     },
     password:{
         type: String,
+        required: true,
         min:8,
-        validate:{
-            validator: function(value){
-                //password must contain at least one uppercase letter, one lowercase letter, one digit and one special character
-                return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Password is not strong enough");
             }
         }
     },
@@ -47,7 +55,12 @@ const userSchema = new mongoose.Schema({
         default: "India"
     },
     skills:{
-        type: [String]
+        type: [String],
+        validate(value){
+            if(value.length > 10){
+                throw new Error("Skills cannot exceed 10");
+            }
+        }
     }
 }, {timestamps: true})
 
