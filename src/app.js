@@ -6,6 +6,7 @@ const {validateSignUp} = require('./utils/validateSignUp');
 const bcrypt = require('bcrypt');
 const jwtToken = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const {userAuth} = require('./middlewares/auth');
 //create an app from the express module
 const app = express();
 
@@ -47,7 +48,7 @@ app.post('/login', async (req,res)=>{
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(isPasswordValid){
-            const token = await jwtToken.sign({userId: user._id}, 'secretKey')
+            const token = await jwtToken.sign({userId: user._id}, 'secretKey', {expiresIn: '1d'});
             res.cookie('token', token);
             res.status(200).send("User logged in successfully");
         }
@@ -108,21 +109,10 @@ app.get('/feed', async (req,res)=>{
     }
 })
 
-app.get("/profile", async(req,res)=>{
+app.get("/profile", userAuth ,async(req,res)=>{
     try{
-         const cookies = req.cookies;
-        const {token} = cookies;
-        if(!token){
-            throw new Error("Unauthorized: Please login again");
-        }
-        const decodedVal = jwtToken.verify(token, 'secretKey');
-        const {userId} = decodedVal;
-        const user = await User.findById(userId);
-        if(!user){
-            res.status(404).send("User not found");
-        }else{
+            const user = req.user;
             res.send(user);
-        }
     }
     catch(err){
         res.status(500).send("Error in fetching profile" + err.message);
