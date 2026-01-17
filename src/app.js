@@ -85,10 +85,15 @@ app.get('/feed', async (req,res)=>{
         res.status(500).send("Error in deleting the user" + err.message);
     }
  })
- app.patch("/user", async (req,res)=>{
-    const id = req.body.id;
+ app.patch("/user/:id", async (req,res)=>{
+    const id = req.params.id;
     const data = req.body
     try{
+        const allowedUpdates = ['firstName', 'lastName', 'password', 'age','skills', 'photoUrl'];
+        const notAllowedUpdates = Object.keys(data).every((key)=> allowedUpdates.includes(key));
+        if(!notAllowedUpdates){
+            throw new Error("Invlalid Updates");
+        }
         const user  = await User.findByIdAndUpdate(id, data, {runValidators: true});
         if(!user){
             res.status(404).send("User not found");
