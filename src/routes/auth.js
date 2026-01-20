@@ -1,0 +1,54 @@
+const express  = require('express');
+const authRouter = express.Router();
+const {validateSignUp} = require('../utils/validateSignUp');
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
+
+authRouter.post('/signup', async (req, res)=>{
+    console.log("Signup route called");
+    const {firstName, lastName, email, password, age, gender, photoUrl, country, skills} = req.body;
+    try{
+     validateSignUp(req);
+     const passwordHash = await bcrypt.hash(password, 10);
+    const user = new User({
+        firstName,
+        lastName,
+        email,
+        password: passwordHash,
+        age,
+        gender,
+        photoUrl,
+        country,
+        skills
+    });
+        await  user.save();
+        res.send("User signed up successfully");
+    }
+    catch(err){
+        res.status(500).send("Error in signing up the user" + err.message);
+    }
+})
+
+authRouter.post('/login', async (req,res)=>{
+    const {email,password} = req.body;
+    try{
+        const user = await User.findOne({email:email})
+        if(!user){
+            throw new Error("Invalid login credentials");
+        }
+        const isPasswordValid = await user.bcryptPassword(password);
+        if(isPasswordValid){
+            const token = await user.getJWT();
+            res.cookie('token', token);
+            res.status(200).send("User logged in successfully");
+        }
+        else{
+            throw new Error("Invalid login credentials");
+        }
+    }
+    catch(err){
+        res.status(500).send("Error in logging in the user" + err.message);
+    }
+})
+
+module.exports = authRouter;
