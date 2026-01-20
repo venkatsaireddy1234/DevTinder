@@ -13,6 +13,7 @@ const app = express();
 
 // express.json() line converts the response into json format
 app.use(express.json());
+
 // cookieParser()  parses the request for the following endpoints 
 app.use(cookieParser())
 
