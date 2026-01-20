@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.getJWT = async function(){
     const user = this;
-    const token = await jwtToken.sign({userId: user._id}, 'secretKey', {expiresIn: '1M'});
+    const token = await jwtToken.sign({userId: user._id}, 'secretKey', {expiresIn: '1d'});
     return token;
 }
 userSchema.methods.bcryptPassword = async function(password){
