@@ -4,9 +4,10 @@ const {connectDB} = require('./Config/dataBase');
 
 
 const cookieParser = require('cookie-parser');
-const {userAuth} = require('./middlewares/auth');
+
 const authRouter = require('./routes/auth');
 const profileRouter = require('./routes/profile');
+const requestRouter = require('./routes/request');
 //create an app from the express module
 const app = express();
 
@@ -18,19 +19,8 @@ app.use(cookieParser())
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
+app.use('/', requestRouter)
 
-
-app.get("/sendConnectionRequest",  userAuth,async(req,res) =>{
-    try{
-        const user = req.user;
-        if(!user){
-            throw new Error("User not found");
-        }
-        res.send("Connection request sent successfully by " + user.firstName);
-    }catch(err){
-        res.status(500).send("Error in sending connection request" + err.message);
-    }
-})
 
 connectDB().then(()=>{
     console.log("DB connected successfully");
