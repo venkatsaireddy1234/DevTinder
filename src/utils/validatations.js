@@ -18,5 +18,12 @@ const validateSignUp =(req) =>{
     }
 }
 
-
-module.exports = {validateSignUp};
+const validateEditFields = (req) =>{
+    const allowedEditFields = ['firstName', 'lastName', 'age', 'skills', 'about'];
+    const isValidEdit = Object.keys(req).every((field)=> allowedEditFields.includes(field));
+    if(!isValidEdit){
+        throw new Error("Invalid edit fields");
+    }
+    return isValidEdit;
+}
+module.exports = {validateSignUp, validateEditFields};
