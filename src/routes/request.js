@@ -65,6 +65,38 @@ requestRouter.post(
   }
 );
 
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req,res) =>{
+    try{
+        //status should be only allowed
+        const {status, requestId} = req.params;
+        const loggedInUser = req.user
+        console.log(loggedInUser._id)
+        const allowedStatus = ["accepted", "rejected"];
+
+        if(!allowedStatus.includes(status)){
+            throw Error ("Status not allowed");
+        }
+        // requestId should be present in the db (DB call)
+        //whoever accepting the request should be loggedIn user(DB call that is in the DB 
+        // call we have stored the toUserId while sending the request that toUserId should be loggedIn user)
+        // status of that should be interested nor ignored or anything
+
+        const connectionRequest = await ConnectionRequestModel.findOne({
+            _id:requestId,
+            toUserId:loggedInUser._id,
+            status:"interested"
+        })
+        if(!connectionRequest){
+            throw Error ("Invalid Connection Request");
+        }
+        //if everything is good then change the status in the connectionRequest and save it 
+        connectionRequest.status = status;
+        await connectionRequest.save();
+        res.status(200).json({message:"Request Accepted Succuesfully"})
+    }catch(err){
+        res.status(400).send("Something Went Wrong " + err.message)
+    }
+})
 
 
 module.exports = requestRouter;
