@@ -18,6 +18,9 @@ app.use(express.json());
 // cookieParser()  parses the request for the following endpoints 
 app.use(cookieParser())
 
+// Inorder to avoid cors issue that is it won't allow us to send one ip address to another 
+const corsOptions = {origin :"http://localhost:5173", credentials: true}
+app.use(cors(corsOptions))
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
