@@ -57,6 +57,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "India"
     },
+    about:{
+        type:String,
+    },
     skills:{
         type: [String],
         validate(value){

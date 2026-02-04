@@ -3,7 +3,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 const validateSignUp =(req) =>{
-    const {firstName, lastName, email, password, age, skills} = req.body;
+    const {firstName, lastName, email, password, age, skills,about} = req.body;
     if(!firstName || !lastName){
         throw new Error("First name and Last name are required");
     }else if( firstName.length <5 || firstName.length > 50){
@@ -16,14 +16,16 @@ const validateSignUp =(req) =>{
         throw new Error("Age must be at least 16");
     }else if(skills && skills.length > 10){
         throw new Error("Skills cannot exceed 10");
+    }else if(about && about.length > 25){
+        throw new Error("Skills cannot exceed length of 25 Chars");
     }
 }
 
 const validateEditFields = (req) =>{
-    const allowedEditFields = ['firstName', 'lastName', 'age', 'skills', 'about','photoUrl'];
+    const allowedEditFields = ['firstName', 'lastName', 'age', 'skills', 'about','photoUrl,gender'];
     const isValidEdit = Object.keys(req).every((field)=> allowedEditFields.includes(field));
     if(!isValidEdit){
-        throw new Error("Invalid edit fields");
+        throw new Error(" Invalid edit fields");
     }
     return isValidEdit;
 }
