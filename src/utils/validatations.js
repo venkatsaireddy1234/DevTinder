@@ -22,7 +22,7 @@ const validateSignUp =(req) =>{
 }
 
 const validateEditFields = (req) =>{
-    const allowedEditFields = ['firstName', 'lastName', 'age', 'skills', 'about','photoUrl,gender'];
+    const allowedEditFields = ['firstName', 'lastName', 'age', 'skills', 'about', 'photoUrl', 'gender'];
     const isValidEdit = Object.keys(req).every((field)=> allowedEditFields.includes(field));
     if(!isValidEdit){
         throw new Error(" Invalid edit fields");
