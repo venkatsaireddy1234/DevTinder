@@ -1,6 +1,7 @@
 //import the express module
 const express = require('express');
 const {connectDB} = require('./Config/dataBase');
+require("dotenv").config();
 
 
 const cookieParser = require('cookie-parser');
@@ -14,7 +15,10 @@ const app = express();
 
 
 // Inorder to avoid cors issue that is it won't allow us to send one ip address to another 
-const corsOptions = {origin :"http://localhost:5173", credentials: true}
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+};
 app.use(cors(corsOptions))
 // express.json() line converts the response into json format
 // Increase limit to allow base64 image strings from profile updates
@@ -29,13 +33,16 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use('/', requestRouter)
 app.use("/", userRouter)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 connectDB().then(()=>{
     console.log("DB connected successfully");
-    app.listen(7777, ()=>{
-        console.log("server is listening on port no 7777")
+    const PORT = process.env.PORT || 7777;
+    app.listen(PORT, "0.0.0.0", ()=>{
+        console.log("server is listening on port no " + PORT)
     })
 }).catch((err)=>{
     console.log("DB connection failed", err);
 })
-
