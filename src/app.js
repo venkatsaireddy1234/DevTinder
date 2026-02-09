@@ -12,6 +12,7 @@ const requestRouter = require('./routes/request');
 const userRouter = require('./routes/user');
 //create an app from the express module
 const app = express();
+app.set("trust proxy", 1);
 
 
 // Inorder to avoid cors issue that is it won't allow us to send one ip address to another 

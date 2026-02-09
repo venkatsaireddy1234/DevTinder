@@ -36,7 +36,11 @@ authRouter.post("/signup", async (req, res) => {
     const savedUser = await user.save();
     console.log(savedUser);
     const token = await savedUser.getJWT();
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
     res.status(200).json({
       success: true,
       message: "User signedup in successfully",
@@ -57,7 +61,11 @@ authRouter.post("/login", async (req, res) => {
     const isPasswordValid = await user.bcryptPassword(password);
     if (isPasswordValid) {
       const token = await user.getJWT();
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
       res.status(200).json({
         success: true,
         message: "User logged in successfully",
@@ -72,7 +80,12 @@ authRouter.post("/login", async (req, res) => {
 });
 authRouter.post("/logout", (req, res) => {
   res
-    .cookie("token", "", { expires: new Date() })
+    .cookie("token", "", {
+      expires: new Date(),
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    })
     .send("User logged out successfully");
 });
 module.exports = authRouter;
