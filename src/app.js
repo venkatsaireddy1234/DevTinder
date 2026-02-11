@@ -1,58 +1,42 @@
-//import the express module
-const express = require('express');
-const {connectDB} = require('./Config/dataBase');
-require("dotenv").config();
-
-
-const cookieParser = require('cookie-parser');
-const cors = require('cors')
-const authRouter = require('./routes/auth');
-const profileRouter = require('./routes/profile');
-const requestRouter = require('./routes/request');
-const userRouter = require('./routes/user');
-//create an app from the express module
+const express = require("express");
+const { connectDB } = require("./Config/dataBase");
+const cookieParser = require("cookie-parser");
 const app = express();
-app.set("trust proxy", 1);
+const dotenv = require("dotenv");
+dotenv.config({});
+const cors = require("cors");
 
+app.use(
+  cors({
+    origin:
+      "http://localhost:5173" ||
+      "https://tinderdevelopers.online," ||
+      "https://dev-tinder-web-livid.vercel.app",
+    credentials: true,
+  }),
+);
 
-// Inorder to avoid cors issue that is it won't allow us to send one ip address to another 
-const allowedOrigins = (process.env.FRONTEND_URLS || "http://13.60.53.210" || "https://tinderdevelopers.online")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
-};
-app.use(cors(corsOptions))
-// express.json() line converts the response into json format
-// Increase limit to allow base64 image strings from profile updates
-app.use(express.json({ limit: "5mb" }));
-app.use(express.urlencoded({ limit: "5mb", extended: true }));
+app.use(express.json());
+app.use(cookieParser());
 
-// cookieParser()  parses the request for the following endpoints 
-app.use(cookieParser())
-
+//routes
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
-app.use('/', requestRouter)
-app.use("/", userRouter)
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
+app.use("/", requestRouter);
+app.use("/", userRouter);
 
-connectDB().then(()=>{
-    console.log("DB connected successfully");
-    const PORT = process.env.PORT || 7777;
-    app.listen(PORT, "0.0.0.0", ()=>{
-        console.log("server is listening on port no " + PORT)
-    })
-}).catch((err)=>{
-    console.log("DB connection failed", err);
-})
+//database connect before server
+connectDB().then(() => {
+  try {
+    app.listen(process.env.PORT || 7777, () => {
+      console.log(`Server running on ` + process.env.PORT);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
