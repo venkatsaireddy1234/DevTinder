@@ -67,7 +67,6 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       }
       return row.fromUserId;
     });
-    console.log(data);
     res.status(200).json({
       data,
     });

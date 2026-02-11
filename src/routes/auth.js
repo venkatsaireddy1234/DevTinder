@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 
 authRouter.post("/signup", async (req, res) => {
-  console.log("Signup route called");
   const {
     firstName,
     lastName,
@@ -34,7 +33,6 @@ authRouter.post("/signup", async (req, res) => {
       about,
     });
     const savedUser = await user.save();
-    console.log(savedUser);
     const token = await savedUser.getJWT();
     res.cookie("token", token, {
       httpOnly: true,
