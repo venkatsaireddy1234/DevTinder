@@ -16,7 +16,7 @@ app.set("trust proxy", 1);
 
 
 // Inorder to avoid cors issue that is it won't allow us to send one ip address to another 
-const allowedOrigins = (process.env.FRONTEND_URLS || "http://13.60.53.210")
+const allowedOrigins = (process.env.FRONTEND_URLS || "https://tinderdevelopers.online/")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
